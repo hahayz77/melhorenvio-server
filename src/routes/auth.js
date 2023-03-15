@@ -4,7 +4,12 @@ const User = require('../models/User');
 
 
 router.get('/', async(req,res)=>{
-
+    try {
+        const findUsers = await User.find();
+        res.send(findUsers);
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 router.post('/register', async(req, res)=>{
