@@ -10,6 +10,7 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/auth', require('./routes/auth'));
+app.use('/user', require('./routes/user'));
 
 app.get('/', (req, res)=> res.json({response: "Backend"}));
 app.delete('/', async (req,res)=>{
