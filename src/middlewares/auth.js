@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
 
 
 module.exports = (req,res,next)=>{
@@ -8,15 +8,9 @@ module.exports = (req,res,next)=>{
     if(!authHeader)
     return res.status(401).json({error: "No token Provided!"});
 
-    const parts = authHeader.split(' ');
+    const token = authHeader.split(' ')[1];
 
-    if(!parts.length === 2)
-    return res.status(401).json({error: "token Error!"});
-
-    const [ scheme, token ] = parts;
-
-    if(!/^Bearer$/i.test(scheme))
-    return res.status(401).json({error: "Token not formated"});
+    if(token === null) return res.status(401).json({error: "Invalid Token!"});
 
     jwt.verify(token, process.env.SECRET, (err, decoded)=>{
         if(err)

@@ -1,26 +1,16 @@
+require('dotenv').config();
 const express = require("express");
 const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-
 
 function generateToken(params = {}){
     return jwt.sign({ params }, process.env.SECRET, {
-        expiresIn: 86400,
+        expiresIn: '15s',
     })
     
 }
-
-router.get('/', async(req,res)=>{
-    try {
-        const findUsers = await User.find();
-        res.send(findUsers);
-    } catch (err) {
-        console.log(err)
-    }
-})
 
 router.post('/register', async(req, res)=>{
     try {        
