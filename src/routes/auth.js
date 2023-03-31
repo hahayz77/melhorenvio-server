@@ -12,7 +12,7 @@ function generateToken(params = {}){
     
 }
 
-router.post('/register', async(req, res)=>{
+router.post('/signup', async(req, res)=>{
     try {        
         const { email, password } = req.body;
         const findUser = await User.findOne({email: email});
