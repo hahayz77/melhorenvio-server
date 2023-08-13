@@ -11,7 +11,14 @@ const TokenSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-
-})
+    expires_in: {
+        type: Number,
+        required: true
+    }
+},
+    {
+        timestamps: true // Add timestamps option here
+    }
+)
 
 module.exports = mongoose.model('Token', TokenSchema);

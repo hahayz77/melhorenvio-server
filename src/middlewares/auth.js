@@ -2,22 +2,17 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken');
 
 
-module.exports = (req,res,next)=>{
-    const authHeader = req.headers.authorization;
+module.exports = (req, res, next) => {
+    const { access_token } = req.body;
 
-    // if(!authHeader)
-    // return res.status(401).json({error: "No token Provided!"});
+    // verificar se o access_token é válido (se expirou ou não está vazio)
+    // ATENÇÃO, VERIFICAR POSSIBILIDADE DE ENVIAREM FALSO ACCESS_TOKEN
 
-    // const token = authHeader.split(' ')[1];
+    // caso não seja válido usar método refreshToken();
+    // refreshToken() precisa: 
+    //1 - usar refreshToken Válido, 
+    //2 - enviar novo access_token pro usuario
 
-    // if(token === null) return res.status(401).json({error: "Invalid Token!"});
-
-    // jwt.verify(token, process.env.SECRET, (err, decoded)=>{
-    //     if(err)
-    //     return res.status(401).json({error: "Invalid Token!"})
-
-    //     req.userId = decoded.params.id;
-        return next();
-    // })
-
+    // caso seja válido next();
+    return next();
 }
