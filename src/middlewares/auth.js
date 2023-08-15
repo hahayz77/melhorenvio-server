@@ -15,14 +15,16 @@ module.exports = async (req, res, next) => {
         }  
 
         const decoded = await jwt.decode(access_token); //decode token
+        if(!decoded) throw new Error("Error on Decode Token, something is wrong with this token!")
         const currentTimestamp = Math.floor(Date.now() / 1000);
+
 
         //RefreshTokens
         if (currentTimestamp > decoded.exp) { // < to force refresh token
             if(tokensFromDB) access_token = await refreshToken(tokensFromDB.refresh_token); // If already got tokens from DB
             else{ // if have no token from DB
                 tokensFromDB = await getTokensDB();
-                access_token = await refreshToken(tokensFromDB.refresh_token)
+                access_token = await refreshToken(tokensFromDB.refresh_token);
             }
         }
 
