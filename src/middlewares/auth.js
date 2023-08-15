@@ -1,12 +1,13 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken');
-const getAccessToken = require('../functions/GetAccessToken');
+const getAccessTokenOnDB = require('../functions/GetAccessTokenOnDB');
 
 
 module.exports = async (req, res, next) => {
     const { access_token } = req.body;
 
-    if(!access_token) req.body.access_token = await getAccessToken();
+    // Se não for enviado nenhum token
+    if(!access_token) req.body.access_token = await getAccessTokenOnDB();
 
 
     // verificar se o access_token é válido (se expirou ou não está vazio)
