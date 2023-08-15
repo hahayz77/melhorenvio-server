@@ -1,23 +1,35 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken');
-const getAccessTokenOnDB = require('../functions/GetAccessTokenOnDB');
+const getTokensDB = require('../functions/GetTokensDB');
+const refreshToken = require('../functions/RefreshToken');
 
 
 module.exports = async (req, res, next) => {
-    const { access_token } = req.body;
+    try {
+        let tokensFromDB;
+        let { access_token } = req.body; // if access_token was sended from the client
+        
+        if (!access_token) { // If no one access_token was sended from the client
+            tokensFromDB = await getTokensDB();
+            access_token = tokensFromDB.access_token;
+        }  
 
-    // Se não for enviado nenhum token
-    if(!access_token) req.body.access_token = await getAccessTokenOnDB();
+        const decoded = await jwt.decode(access_token); //decode token
+        const currentTimestamp = Math.floor(Date.now() / 1000);
 
+        //RefreshTokens
+        if (currentTimestamp < decoded.exp) { // < to force refresh token
+            if(tokensFromDB) refreshToken(tokensFromDB.refresh_token); // If already got tokens from DB
+            else{ // if have no token from DB
+                tokensFromDB = await getTokensDB();
+                refreshToken(tokensFromDB.refresh_token)
+            }
+        }
 
-    // verificar se o access_token é válido (se expirou ou não está vazio)
-    // ATENÇÃO, VERIFICAR POSSIBILIDADE DE ENVIAREM FALSO ACCESS_TOKEN
-
-    // caso não seja válido usar método refreshToken();
-    // refreshToken() precisa: 
-    //1 - usar refreshToken Válido, 
-    //2 - enviar novo access_token pro usuario
-
-    // caso seja válido next();
-    return next();
+        // All OK! No need to refresh tokens
+        req.body = {access_token}; //send access_token back to the next route
+        return next();
+    } catch (err) {
+        next(err);
+    }
 }
