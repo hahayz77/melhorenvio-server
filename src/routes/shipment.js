@@ -1,21 +1,15 @@
 require('dotenv').config();
 const express = require("express");
 const router = express.Router();
-const Token = require('../models/Token');
+const Token = require('../database/models/Token');
 const authMiddleware = require('../middlewares/auth');
 
 router.use(authMiddleware);
 
 router.get("/", async (req, res) => {
-    try {
-        const getToken = await Token.findOne();
-        const accessToken = await getToken.access_token
-
-        res.status(200).json({ accessToken })
-
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+    const { access_token } = req.body;
+    // console.log(req.body)
+    res.status(200).json({ access_token })
 })
 
 router.post('/calculate', async (req, res) => {
