@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 
 module.exports = (req,res,next)=>{
-    console.log(req.body)
+    // console.log(req.body)
     
     return next();
 }
