@@ -29,7 +29,7 @@ module.exports = async (req, res, next) => {
         }
 
         // All OK! No need to refresh tokens
-        req.body = {access_token}; //send access_token back to the next route
+        req.body.access_token = access_token; //send access_token back to the next route
         return next();
     } catch (err) {
         next(err);
