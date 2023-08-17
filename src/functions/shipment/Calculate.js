@@ -12,7 +12,7 @@ const shipmentCalculate = async (access_token, zip_code) => {
                     "postal_code": "01002001"
                 },
                 "to": {
-                    "postal_code": "90570020"
+                    "postal_code": zip_code,
                 },
                 "package": {
                     "height": 4,
@@ -33,7 +33,6 @@ const shipmentCalculate = async (access_token, zip_code) => {
         if (!response.ok) throw new Error (response.statusText);
 
         const data = await response.json();
-        // console.log(data);
         return data;
 
     } catch (err) {

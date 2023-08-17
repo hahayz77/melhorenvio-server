@@ -23,7 +23,7 @@ router.post('/calculate', async (req, res) => {
 
         // if(!zipCode) return res.status(400).json({msg: "ZipCode not found!"})
 
-        res.status(200).json({ data });
+        res.status(200).json(data);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
