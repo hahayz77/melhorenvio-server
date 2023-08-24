@@ -18,8 +18,8 @@ router.get("/", async (req, res) => {
 
 router.post('/calculate', async (req, res) => {
     try {
-        const { access_token, zip_code } = req.body;
-        const data = await shipmentCalculate(access_token, zip_code);
+        const { access_token, zip_code, package } = req.body;
+        const data = await shipmentCalculate(access_token, zip_code, package);
 
         // if(!zipCode) return res.status(400).json({msg: "ZipCode not found!"})
 

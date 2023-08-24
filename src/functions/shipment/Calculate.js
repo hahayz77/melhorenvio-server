@@ -1,4 +1,5 @@
-const shipmentCalculate = async (access_token, zip_code) => {
+const shipmentCalculate = async (access_token, zip_code, package) => {
+    if(!package) package = { "height": 4, "width": 12, "length": 17, "weight": 0.3 } // default size of package!
     try {
         const response = await fetch("https://sandbox.melhorenvio.com.br/api/v2/me/shipment/calculate", {
             method: "POST",
@@ -14,12 +15,7 @@ const shipmentCalculate = async (access_token, zip_code) => {
                 "to": {
                     "postal_code": zip_code,
                 },
-                "package": {
-                    "height": 4,
-                    "width": 12,
-                    "length": 17,
-                    "weight": 0.3
-                },
+                "package": package,
                 "options": {
                     "insurance_value": 1180.87,
                     "receipt": false,
@@ -30,7 +26,7 @@ const shipmentCalculate = async (access_token, zip_code) => {
         })
 
         // console.log(response);
-        if (!response.ok) throw new Error (response.statusText);
+        if (!response.ok) throw new Error(response.statusText);
 
         const data = await response.json();
         return data;
