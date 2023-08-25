@@ -6,28 +6,26 @@ const refreshToken = require('../functions/RefreshToken');
 
 module.exports = async (req, res, next) => {
     try {
-        let tokensFromDB;
+        const currentTimestamp = Math.floor(Date.now() / 1000);
         let { access_token } = req.body; // if access_token was sended from the client
-        
-        if (!access_token) { // If no one access_token was sended from the client
-            tokensFromDB = await getTokensDB();
-            access_token = tokensFromDB.access_token;
-        }  
+        if (!access_token) throw new Error("No token was provided!")  // If no one access_token was sended from the client
 
         const decoded = await jwt.decode(access_token); //decode token
-        if(!decoded) throw new Error("Error on Decode Token, something is wrong with this token!")
-        const currentTimestamp = Math.floor(Date.now() / 1000);
+        if (!decoded) throw new Error("Error on Decode Token! Something is wrong with this token.");
 
 
-        //RefreshTokens
-        if (currentTimestamp > decoded.exp) { // < to force refresh token
-            if(tokensFromDB) access_token = await refreshToken(tokensFromDB.refresh_token); // If already got tokens from DB
-            else{ // if have no token from DB
-                tokensFromDB = await getTokensDB();
+        if (currentTimestamp < decoded.exp) { // < to force refresh
+            const tokensFromDB = await getTokensDB();
+            if (!tokensFromDB) throw new Error("Internal server error! No token provided from storage.");
+
+            const decodeTokenFromDB = await jwt.decode(tokensFromDB.access_token); //decode token from db
+            if (!decodeTokenFromDB) throw new Error("Error on Decode Token! Something is wrong with this stored token.");
+
+            if (currentTimestamp < decodeTokenFromDB.exp) {
                 access_token = await refreshToken(tokensFromDB.refresh_token);
+                if (!access_token) throw new Error("Internal Server Error! No Access Token from storage!");
             }
         }
-
         // All OK! No need to refresh tokens
         req.body.access_token = access_token; //send access_token back to the next route
         return next();
