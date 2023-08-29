@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const { default: fetch } = require("node-fetch");
 
 const shipmentCalculate = async (access_token, zip_code, package) => {
     if(!package) package = { "height": 4, "width": 12, "length": 17, "weight": 0.3 } // default size of package!

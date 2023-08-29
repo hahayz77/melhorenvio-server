@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const { default: fetch } = require("node-fetch");
 const Token = require("../database/models/Token");
 
 const refreshToken = async (oldRefreshToken) => {
