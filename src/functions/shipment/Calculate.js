@@ -25,8 +25,7 @@ const shipmentCalculate = async (access_token, zip_code, package) => {
             })
         })
 
-        // console.log(response);
-        if (!response.ok) throw new Error(response.statusText);
+        if (!response.ok) return { error: response.statusText }
 
         const data = await response.json();
         return data;
